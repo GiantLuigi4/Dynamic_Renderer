@@ -125,12 +125,15 @@ public class Renderer {
 	public static void renderTexturedModel(TexturedModel mdl, ResourceLocation base, ResourceLocation mask, ResourceLocation overlay, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {
 		renderTexturedModel(mdl,base,mask,overlay,AtlasTexture.LOCATION_BLOCKS_TEXTURE,buffer,matrixStack,combinedLightIn,combinedOverlayIn);
 	}
-	public static void renderTexturedModel(TexturedModel mdl, ResourceLocation base, ResourceLocation mask, ResourceLocation overlay, ResourceLocation atlas, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {
+	public static void renderTexturedModel(TexturedModel mdl, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {
+
+	}
+	public static void renderTexturedModel(TexturedModel mdl, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn,boolean inverted) {
 		ArrayList<BakedQuad> transparent=new ArrayList<>();
 		ArrayList<BakedQuad> solid=new ArrayList<>();
 		ArrayList<BakedQuad> solid2=new ArrayList<>();
 		for (TexturedQuad qd:mdl.quads) {
-			BakedQuad quad=createQuad(qd.vec1,qd.vec2,qd.vec3,qd.vec4,qd.sprite,Direction.NORTH,qd.wrapper);
+			BakedQuad quad=createQuad(inverted?qd.vec4:qd.vec1,inverted?qd.vec2:qd.vec3,inverted?qd.vec2:qd.vec3,inverted?qd.vec1:qd.vec4,qd.sprite,Direction.NORTH,qd.wrapper);
 			if (qd.isTransparent) {
 				transparent.add(quad);
 			} else if (qd.isPrimary) {
@@ -143,7 +146,10 @@ public class Renderer {
 		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getTranslucent()),transparent,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
 		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getSolid()),solid2,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
 	}
-	
+	@Deprecated
+	public static void renderTexturedModel(TexturedModel mdl, ResourceLocation base, ResourceLocation mask, ResourceLocation overlay, ResourceLocation atlas, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {
+		renderTexturedModel(mdl,buffer,matrixStack,combinedLightIn,combinedOverlayIn);
+	}
 	
 	//MCJTY:https://github.com/McJty/YouTubeModding14/blob/master/src/main/java/com/mcjty/mytutorial/blocks/FancyBakedModel.java
 	public static BakedQuad createQuad(

@@ -126,7 +126,9 @@ public class Renderer {
 		renderTexturedModel(mdl,base,mask,overlay,AtlasTexture.LOCATION_BLOCKS_TEXTURE,buffer,matrixStack,combinedLightIn,combinedOverlayIn);
 	}
 	public static void renderTexturedModel(TexturedModel mdl, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {
-
+		//Forgot this in the jar
+		//Do not use for rn
+		renderTexturedModel(mdl,buffer,matrixStack,combinedLightIn,combinedOverlayIn,false);
 	}
 	public static void renderTexturedModel(TexturedModel mdl, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn,boolean inverted) {
 		ArrayList<BakedQuad> transparent=new ArrayList<>();

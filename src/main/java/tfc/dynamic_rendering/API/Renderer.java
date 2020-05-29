@@ -126,8 +126,6 @@ public class Renderer {
 		renderTexturedModel(mdl,base,mask,overlay,AtlasTexture.LOCATION_BLOCKS_TEXTURE,buffer,matrixStack,combinedLightIn,combinedOverlayIn);
 	}
 	public static void renderTexturedModel(TexturedModel mdl, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {
-		//Forgot this in the jar
-		//Do not use for rn
 		renderTexturedModel(mdl,buffer,matrixStack,combinedLightIn,combinedOverlayIn,false);
 	}
 	public static void renderTexturedModel(TexturedModel mdl, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn,boolean inverted) {
@@ -135,7 +133,7 @@ public class Renderer {
 		ArrayList<BakedQuad> solid=new ArrayList<>();
 		ArrayList<BakedQuad> solid2=new ArrayList<>();
 		for (TexturedQuad qd:mdl.quads) {
-			BakedQuad quad=createQuad(inverted?qd.vec4:qd.vec1,inverted?qd.vec2:qd.vec3,inverted?qd.vec2:qd.vec3,inverted?qd.vec1:qd.vec4,qd.sprite,Direction.NORTH,qd.wrapper);
+			BakedQuad quad=createQuad(inverted?qd.vec4:qd.vec1,inverted?qd.vec3:qd.vec2,inverted?qd.vec2:qd.vec3,inverted?qd.vec1:qd.vec4,qd.sprite,Direction.NORTH,qd.wrapper);
 			if (qd.isTransparent) {
 				transparent.add(quad);
 			} else if (qd.isPrimary) {

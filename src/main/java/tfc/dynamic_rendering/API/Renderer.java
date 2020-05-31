@@ -2,6 +2,7 @@ package tfc.dynamic_rendering.API;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -29,7 +30,6 @@ public class Renderer {
 		for (Quad qd:mdl.quads) {
 			solid.add(createQuad(qd.vec1,qd.vec2,qd.vec3,qd.vec4,sprite2,Direction.NORTH,qd.wrapper));
 			transparent.add(createQuad(qd.vec1,qd.vec2,qd.vec3,qd.vec4,sprite,Direction.NORTH,qd.wrapper));
-//			transparent.add(createQuad(qd.vec1,qd.vec2,qd.vec3,qd.vec4,sprite,Direction.NORTH,qd.wrapper));
 			double zOff=-0.0002;
 			for (int x=0;x<sprite3.getWidth();x++) {
 				int startY=-999;
@@ -97,6 +97,152 @@ public class Renderer {
 			}
 		}
 		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getSolid()),solid,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
+		RenderSystem.enableBlend();
+		RenderSystem.enableAlphaTest();
+		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getTranslucent()),transparent,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
+		RenderSystem.disableAlphaTest();
+		RenderSystem.disableBlend();
+		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getSolid()),solid2,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
+	}
+	public static void render(ResourceLocation base, ResourceLocation mask, ResourceLocation overlay, ResourceLocation mask2, ResourceLocation atlas, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {
+		TextureAtlasSprite sprite= Minecraft.getInstance().getAtlasSpriteGetter(atlas).apply(base);
+		TextureAtlasSprite sprite2=Minecraft.getInstance().getAtlasSpriteGetter(atlas).apply(mask);
+		TextureAtlasSprite sprite3=Minecraft.getInstance().getAtlasSpriteGetter(atlas).apply(overlay);
+		TextureAtlasSprite sprite4=Minecraft.getInstance().getAtlasSpriteGetter(atlas).apply(mask2);
+		ArrayList<BakedQuad> transparent=new ArrayList<>();
+		ArrayList<BakedQuad> solid=new ArrayList<>();
+		ArrayList<BakedQuad> solid2=new ArrayList<>();
+		double zOff=-0.0002;
+		for (int x=0;x<sprite3.getWidth();x++) {
+			int startY=-999;
+			for (int y=0;y<sprite3.getWidth();y++) {
+				if (new Color(sprite2.getPixelRGBA(0,x,y),true).getAlpha()==0&&y<sprite3.getHeight()-1) {
+					if (startY==-999) {
+						startY=y;
+					}
+				} else {
+					if (startY!=-999) {
+						float xCoord=(float)x/sprite3.getWidth();
+						float yCoordS=(float)startY/sprite3.getHeight();
+						float yCoordE=(float)y/sprite3.getHeight();
+						solid2.add(createQuad(new Vec3d(
+										xCoord,
+										yCoordS,
+										zOff
+								),new Vec3d(
+										xCoord,
+										yCoordE,
+										zOff
+								),new Vec3d(
+										xCoord+(1f/sprite3.getWidth()),
+										yCoordE,
+										zOff
+								),new Vec3d(
+										xCoord+(1f/sprite3.getWidth()),
+										yCoordS,
+										zOff
+								),
+								sprite3,
+								Direction.NORTH,
+								new TextureWrapper(x,startY,1,y-startY)
+						));
+					}
+					startY=-999;
+				}
+			}
+			if (new Color(sprite2.getPixelRGBA(0,x,15),true).getAlpha()==0) {
+				float xCoord=(float)x/sprite3.getWidth();
+				float yCoordS=(float)15/sprite3.getHeight();
+				float yCoordE=(float)16/sprite3.getHeight();
+				solid2.add(createQuad(new Vec3d(
+								xCoord,
+								yCoordS,
+								zOff
+						),new Vec3d(
+								xCoord,
+								yCoordE,
+								zOff
+						),new Vec3d(
+								xCoord+(1f/sprite3.getWidth()),
+								yCoordE,
+								zOff
+						),new Vec3d(
+								xCoord+(1f/sprite3.getWidth()),
+								yCoordS,
+								zOff
+						),
+						sprite3,
+						Direction.NORTH,
+						new TextureWrapper(x,15,1,1)
+				));
+			}
+		}
+		
+		for (int x=0;x<sprite.getWidth();x++) {
+			int startY=-999;
+			for (int y=0;y<sprite.getWidth();y++) {
+				if (new Color(sprite4.getPixelRGBA(0,x,y),true).getAlpha()==0&&y<sprite.getHeight()-1) {
+					if (startY==-999) {
+						startY=y;
+					}
+				} else {
+					if (startY!=-999) {
+						float xCoord=(float)x/sprite.getWidth();
+						float yCoordS=(float)startY/sprite.getHeight();
+						float yCoordE=(float)y/sprite.getHeight();
+						solid.add(createQuad(new Vec3d(
+										xCoord,
+										yCoordS,
+										zOff
+								),new Vec3d(
+										xCoord,
+										yCoordE,
+										zOff
+								),new Vec3d(
+										xCoord+(1f/sprite.getWidth()),
+										yCoordE,
+										zOff
+								),new Vec3d(
+										xCoord+(1f/sprite.getWidth()),
+										yCoordS,
+										zOff
+								),
+								sprite,
+								Direction.NORTH,
+								new TextureWrapper(x,startY,1,y-startY)
+						));
+					}
+					startY=-999;
+				}
+			}
+			if (new Color(sprite4.getPixelRGBA(0,x,15),true).getAlpha()==0) {
+				float xCoord=(float)x/sprite.getWidth();
+				float yCoordS=(float)15/sprite.getHeight();
+				float yCoordE=(float)16/sprite.getHeight();
+				solid.add(createQuad(new Vec3d(
+								xCoord,
+								yCoordS,
+								zOff
+						),new Vec3d(
+								xCoord,
+								yCoordE,
+								zOff
+						),new Vec3d(
+								xCoord+(1f/sprite.getWidth()),
+								yCoordE,
+								zOff
+						),new Vec3d(
+								xCoord+(1f/sprite.getWidth()),
+								yCoordS,
+								zOff
+						),
+						sprite,
+						Direction.NORTH,
+						new TextureWrapper(x,15,1,1)
+				));
+			}
+		}
+		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getSolid()),solid,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
 		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getTranslucent()),transparent,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
 		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getSolid()),solid2,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
 	}
@@ -120,6 +266,9 @@ public class Renderer {
 						new TextureWrapper(0,0,16,16)
 				)
 		}),base,mask,overlay,buffer,matrixStack,combinedLightIn,combinedOverlayIn);
+	}
+	public static void render(ResourceLocation base, ResourceLocation mask, ResourceLocation overlay,ResourceLocation mask2, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {
+		render(base,mask,overlay,mask2,AtlasTexture.LOCATION_BLOCKS_TEXTURE,buffer,matrixStack,combinedLightIn,combinedOverlayIn);
 	}
 	
 	public static void renderTexturedModel(TexturedModel mdl, ResourceLocation base, ResourceLocation mask, ResourceLocation overlay, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {

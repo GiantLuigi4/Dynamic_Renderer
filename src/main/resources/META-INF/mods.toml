@@ -12,7 +12,7 @@ loaderVersion="[28,)" #mandatory (26 is current forge version)
 # The modid of the mod
 modId="dynamic_rendering" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
-version="${file.jarVersion}" #mandatory
+version="1.2" #mandatory
 # A display name for the mod
 displayName="Dynamic Rendering API" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification <here>
@@ -28,7 +28,7 @@ authors="GiantLuigi4" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
 An API for rendering models that don't quite have a model.
-§2THIS MOD DOES NOT DO ANYTHING ON ITS OWN.
+§4THIS MOD DOES NOT DO ANYTHING ON ITS OWN.
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 #[[dependencies.etset]] #optional

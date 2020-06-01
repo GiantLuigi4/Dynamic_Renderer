@@ -1,0 +1,96 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"2": "dynamic_rendering:blocks/corel_stone",
+		"3": "dynamic_rendering:blocks/sky_stone_ornpillar_overlay",
+		"4": "dynamic_rendering:blocks/sky_stone_ornpillar_base",
+		"5": "dynamic_rendering:blocks/corel_stone_ornpillar_overlay",
+		"6": "dynamic_rendering:blocks/corel_stone_ornpillar_base",
+		"7": "dynamic_rendering:blocks/sky_stone",
+		"8": "dynamic_rendering:blocks/pillar_overlay",
+		"9": "dynamic_rendering:blocks/pillar_base",
+		"10": "dynamic_rendering:blocks/test_overlay",
+		"11": "dynamic_rendering:blocks/test",
+		"12": "dynamic_rendering:blocks/pillar_thing_decor",
+		"13": "dynamic_rendering:blocks/pillar_thing_base",
+		"14": "dynamic_rendering:item/test_resource_cluster",
+		"15": "dynamic_rendering:item/test_resource_crystal",
+		"16": "dynamic_rendering:item/metal_pickaxe_leather",
+		"17": "dynamic_rendering:item/metal_pickaxe_metal",
+		"18": "dynamic_rendering:item/metal_pickaxe_metal_o",
+		"19": "dynamic_rendering:item/metal_pickaxe_wood",
+		"20": "dynamic_rendering:item/metal_van_pick_wood",
+		"21": "dynamic_rendering:item/metal_van_pick_metal",
+		"22": "dynamic_rendering:item/oak",
+		"23": "dynamic_rendering:item/iron",
+		"24": "dynamic_rendering:item/metal_pickaxe_metal_2",
+		"particle": "dynamic_rendering:blocks/corel_stone"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [1, 1, 1],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#3"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#2"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#7"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#4"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#5"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#6"}
+			}
+		},
+		{
+			"from": [0, 0, 2],
+			"to": [1, 1, 3],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 10]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#13"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#8"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#10"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#11"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#9"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#12"}
+			}
+		},
+		{
+			"from": [0, 0, 4],
+			"to": [1, 1, 5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 12]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#18"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#14"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#16"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#17"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#19"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#15"}
+			}
+		},
+		{
+			"from": [0, 0, 8],
+			"to": [1, 1, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 16]},
+			"color": 6,
+			"faces": {
+				"north": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"east": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"south": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"west": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"up": {"uv": [0, 0, 1, 1], "texture": "#missing"},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#missing"}
+			}
+		},
+		{
+			"from": [0, 0, 6],
+			"to": [1, 1, 7],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8, 14]},
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#24"},
+				"east": {"uv": [0, 0, 16, 16], "texture": "#23"},
+				"south": {"uv": [0, 0, 16, 16], "texture": "#22"},
+				"west": {"uv": [0, 0, 16, 16], "texture": "#20"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#21"},
+				"down": {"uv": [0, 0, 1, 1], "texture": "#missing"}
+			}
+		}
+	]
+}

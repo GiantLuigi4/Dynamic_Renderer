@@ -14,8 +14,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import tfc.dynamic_rendering.Color;
+import tfc.dynamic_rendering.LineColors;
+import tfc.dynamic_rendering.TestingRegistry.TintHelper;
 
 import java.util.ArrayList;
 
@@ -271,9 +274,6 @@ public class Renderer {
 		render(base,mask,overlay,mask2,AtlasTexture.LOCATION_BLOCKS_TEXTURE,buffer,matrixStack,combinedLightIn,combinedOverlayIn);
 	}
 	
-	public static void renderTexturedModel(TexturedModel mdl, ResourceLocation base, ResourceLocation mask, ResourceLocation overlay, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {
-		renderTexturedModel(mdl,base,mask,overlay,AtlasTexture.LOCATION_BLOCKS_TEXTURE,buffer,matrixStack,combinedLightIn,combinedOverlayIn);
-	}
 	public static void renderTexturedModel(TexturedModel mdl, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {
 		renderTexturedModel(mdl,buffer,matrixStack,combinedLightIn,combinedOverlayIn,false);
 	}
@@ -295,15 +295,252 @@ public class Renderer {
 		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getTranslucent()),transparent,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
 		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getSolid()),solid2,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
 	}
-	@Deprecated
-	public static void renderTexturedModel(TexturedModel mdl, ResourceLocation base, ResourceLocation mask, ResourceLocation overlay, ResourceLocation atlas, IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn) {
-		renderTexturedModel(mdl,buffer,matrixStack,combinedLightIn,combinedOverlayIn);
+	
+	public static PreppedModel prepExtrudedTexture(ExtrudedTexture... textures) {
+		ArrayList<BakedQuad> transparent=new ArrayList<>();
+		ArrayList<BakedQuad> solid=new ArrayList<>();
+		int offset=0;
+		int layer=0;
+		for (ExtrudedTexture tx:textures) {
+			offset+=tx.width;
+			TextureAtlasSprite sprite1=Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tx.base);
+			TextureAtlasSprite sprite2=Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tx.mask);
+			int[] startY1=new int[sprite1.getHeight()];
+			int[] startY2=new int[sprite1.getHeight()];
+			int[] endY1=new int[sprite1.getHeight()];
+			int[] endY2=new int[sprite1.getHeight()];
+			for (int i=0;i<startY1.length;i++) {
+				startY1[i]=-999;
+				startY2[i]=-999;
+				endY1[i]=-999;
+				endY2[i]=-999;
+			}
+			for (int y=0;y<sprite1.getHeight();y++) {
+				for (int x=0;x<sprite1.getHeight();x++) {
+					if (new Color(sprite1.getPixelRGBA(0,x,y),true).getAlpha()!=0) {
+						if (startY1[x]==-999) {
+							startY1[x]=y;
+						}
+						endY1[x]=y;
+					}
+					if (new Color(sprite2.getPixelRGBA(0,x,y),true).getAlpha()!=0) {
+						if (startY2[x]==-999) {
+							startY2[x]=y;
+						}
+						endY2[x]=y;
+					}
+				}
+			}
+			for (int y=0;y<sprite1.getWidth();y++) {
+				int rowStart1=-999;
+				int rowEnd1=-999;
+				int rowStart2=-999;
+				int rowEnd2=-999;
+				for (int x=0;x<sprite1.getWidth();x++) {
+					if (new Color(sprite1.getPixelRGBA(0,x,y),true).getAlpha()!=0) {
+						if (rowStart2==-999) {
+							rowStart2=x;
+						}
+						rowEnd2=x;
+					}
+					if (new Color(sprite2.getPixelRGBA(0,x,y),true).getAlpha()!=0) {
+						if (rowStart1==-999) {
+							rowStart1=x;
+						}
+						rowEnd1=x;
+					}
+				}
+				for (int x=rowStart2;x<rowEnd2+1;x++) {
+					try {
+						if (new Color(sprite1.getPixelRGBA(0,x,y),true).getAlpha()!=0) {
+							float pct=Math.abs(((float)(x-rowStart1)/(float)(rowEnd1)));
+							int px=(int)MathHelper.lerp(pct,rowStart1,rowEnd1);
+							float pct2=0;
+							int py=y;
+							try {
+								if (startY2[px]==-999||endY2[px]==-999||endY1[px]==-999||startY1[px]==-999) {
+									pct2=Math.abs(((float)(y)/(float)(endY2[x])));
+								} else {
+									pct2=Math.abs(((float)(y)/(float)(endY2[px])));
+								}
+								py=(int)MathHelper.lerp(pct2,startY1[px],endY1[px]);
+								if (pct2>1||pct2<0) {
+									py=(int)MathHelper.lerp(pct,startY1[px],endY1[px]);
+								}
+								if (px<=-1||px>=15) {
+									px = x;
+								}
+								if (py>=15||py<0) {
+									py=(int)MathHelper.lerp(pct,startY1[px],endY1[px]);
+								}
+								if (new Color(sprite2.getPixelRGBA(0,px,py),true).getAlpha()!=0) {
+									py+=2;
+								}
+								if (px<=-1||px>=15) {
+									px = (int)MathHelper.lerp(pct,rowStart1,rowEnd1);
+								}
+								if (py>=15||py<0) {
+									py=(int)MathHelper.lerp(pct,startY1[px],endY1[px]);
+								}
+								if (new Color(sprite2.getPixelRGBA(0,px,py),true).getAlpha()!=0) {
+									py=(int)MathHelper.lerp(pct,startY1[px],endY1[px]);
+								}
+								if (px<=-1||px>=15) {
+									px = (int)MathHelper.lerp(pct,rowStart1,rowEnd1);
+								}
+								if (py>=15||py<0) {
+									py=(int)MathHelper.lerp(pct,startY1[px],endY1[px]);
+								}
+								if (new Color(sprite1.getPixelRGBA(0,px,py),true).getAlpha()==0) {
+									py=(int)MathHelper.lerp(pct,startY1[px],endY1[px]);
+									py+=px;
+									py+=pct*2;
+								}
+								if (px<=-1||px>=15) {
+									px = (int)MathHelper.lerp(pct,rowStart1,rowEnd1);
+								}
+								if (py>=15||py<0) {
+									py=(int)MathHelper.lerp(pct,startY1[px],endY1[px]);
+								}
+								if (new Color(sprite1.getPixelRGBA(0,px,py),true).getAlpha()==0) {
+									py=y;
+								}
+								if (new Color(sprite2.getPixelRGBA(0,px,py),true).getAlpha()!=0) {
+									py=(int)(((float)py+(float)py+(float)py+(float)y)/4);
+								}
+							} catch (Exception err) {
+								px=(int)MathHelper.lerp(pct,rowStart1,rowEnd1);
+								py=y;
+							}
+							BakedQuad quad=createQuad(new Vec3d(x,y,offset),new Vec3d(x+1,y,offset),new Vec3d(x+1,y+1,offset),new Vec3d(x,y+1,offset),sprite2,Direction.NORTH,new TextureWrapper(px,py,1,1),-1);
+							BakedQuad quad2=createQuad(new Vec3d(x+1,y,-offset),new Vec3d(x,y,-offset),new Vec3d(x,y+1,-offset),new Vec3d(x+1,y+1,-offset),sprite2,Direction.NORTH,new TextureWrapper(px,py,1,1),-1);
+							BakedQuad quad3=createQuad(new Vec3d(x+1,y+1,offset),new Vec3d(x+1,y,offset),new Vec3d(x+1,y,-offset),new Vec3d(x+1,y+1,-offset),sprite2,Direction.NORTH,new TextureWrapper(px,py,1,1),-1);
+							BakedQuad quad4=createQuad(new Vec3d(x,y,offset),new Vec3d(x,y+1,offset),new Vec3d(x,y+1,-offset),new Vec3d(x,y,-offset),sprite2,Direction.NORTH,new TextureWrapper(px,py,1,1),-1);
+							BakedQuad quad5=createQuad(new Vec3d(x+1,y,offset),new Vec3d(x,y,offset),new Vec3d(x,y,-offset),new Vec3d(x+1,y,-offset),sprite2,Direction.NORTH,new TextureWrapper(px,py,1,1),-1);
+							BakedQuad quad6=createQuad(new Vec3d(x,y+1,offset),new Vec3d(x+1,y+1,offset),new Vec3d(x+1,y+1,-offset),new Vec3d(x,y+1,-offset),sprite2,Direction.NORTH,new TextureWrapper(px,py,1,1),-1);
+							transparent.add(quad);
+							transparent.add(quad2);
+							try {
+								if (new Color(sprite1.getPixelRGBA(0,x+1,y),true).getAlpha()==0) {
+									transparent.add(quad3);
+								}
+							} catch (Exception err) {
+								transparent.add(quad3);
+							}
+							try {
+								if (new Color(sprite1.getPixelRGBA(0,x-1,y),true).getAlpha()==0) {
+									transparent.add(quad4);
+								}
+							} catch (Exception err) {
+								transparent.add(quad4);
+							}
+							try {
+								if (new Color(sprite1.getPixelRGBA(0,x,y-1),true).getAlpha()==0) {
+									transparent.add(quad5);
+								}
+							} catch (Exception err) {
+								transparent.add(quad5);
+							}
+							try {
+								if (new Color(sprite1.getPixelRGBA(0,x,y+1),true).getAlpha()==0) {
+									transparent.add(quad6);
+								}
+							} catch (Exception err) {
+								transparent.add(quad6);
+							}
+							if (tx.twoTransparent) {
+								transparent.add(quad);
+								transparent.add(quad2);
+								try {
+									if (new Color(sprite1.getPixelRGBA(0,x+1,y),true).getAlpha()==0) {
+										transparent.add(quad3);
+									}
+								} catch (Exception err) {
+									transparent.add(quad3);
+								}
+								try {
+									if (new Color(sprite1.getPixelRGBA(0,x-1,y),true).getAlpha()==0) {
+										transparent.add(quad4);
+									}
+								} catch (Exception err) {
+									transparent.add(quad4);
+								}
+								try {
+									if (new Color(sprite1.getPixelRGBA(0,x,y-1),true).getAlpha()==0) {
+										transparent.add(quad5);
+									}
+								} catch (Exception err) {
+									transparent.add(quad5);
+								}
+								try {
+									if (new Color(sprite1.getPixelRGBA(0,x,y+1),true).getAlpha()==0) {
+										transparent.add(quad6);
+									}
+								} catch (Exception err) {
+									transparent.add(quad6);
+								}
+							}
+							
+							quad=createQuad(new Vec3d(x,y,offset),new Vec3d(x+1,y,offset),new Vec3d(x+1,y+1,offset),new Vec3d(x,y+1,offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+							quad2=createQuad(new Vec3d(x+1,y,-offset),new Vec3d(x,y,-offset),new Vec3d(x,y+1,-offset),new Vec3d(x+1,y+1,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+							quad3=createQuad(new Vec3d(x+1,y+1,offset),new Vec3d(x+1,y,offset),new Vec3d(x+1,y,-offset),new Vec3d(x+1,y+1,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+							quad4=createQuad(new Vec3d(x,y,offset),new Vec3d(x,y+1,offset),new Vec3d(x,y+1,-offset),new Vec3d(x,y,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+							quad5=createQuad(new Vec3d(x+1,y,offset),new Vec3d(x,y,offset),new Vec3d(x,y,-offset),new Vec3d(x+1,y,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+							quad6=createQuad(new Vec3d(x,y+1,offset),new Vec3d(x+1,y+1,offset),new Vec3d(x+1,y+1,-offset),new Vec3d(x,y+1,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+							solid.add(quad);
+							solid.add(quad2);
+							try {
+								if (new Color(sprite1.getPixelRGBA(0,x+1,y),true).getAlpha()==0) {
+									solid.add(quad3);
+								}
+							} catch (Exception err) {
+								solid.add(quad3);
+							}
+							try {
+								if (new Color(sprite1.getPixelRGBA(0,x-1,y),true).getAlpha()==0) {
+									solid.add(quad4);
+								}
+							} catch (Exception err) {
+								solid.add(quad4);
+							}
+							try {
+								if (new Color(sprite1.getPixelRGBA(0,x,y-1),true).getAlpha()==0) {
+									solid.add(quad5);
+								}
+							} catch (Exception err) {
+								solid.add(quad5);
+							}
+							try {
+								if (new Color(sprite1.getPixelRGBA(0,x,y+1),true).getAlpha()==0) {
+									solid.add(quad6);
+								}
+							} catch (Exception err) {
+								solid.add(quad6);
+							}
+						}
+					} catch (Exception err) {}
+				}
+			}
+			layer++;
+		}
+		return new PreppedModel(solid,new ArrayList<>(),transparent);
+	}
+	
+	public static void renderPreparedModel(PreppedModel mdl,  IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn, int... tints) {
+		LineColors.colors=new ArrayList<>();
+		for (int tint : tints) {
+			LineColors.colors.add(tint);
+		}
+		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getSolid()),mdl.solid1,new ItemStack(TintHelper.CUBE.get()),combinedLightIn,combinedOverlayIn);
+		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getTranslucent()),mdl.transparent,new ItemStack(TintHelper.CUBE.get()),combinedLightIn,combinedOverlayIn);
+		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStack,buffer.getBuffer(RenderType.getSolid()),mdl.solid2,new ItemStack(TintHelper.CUBE.get()),combinedLightIn,combinedOverlayIn);
+		LineColors.colors.clear();
 	}
 	
 	//MCJTY:https://github.com/McJty/YouTubeModding14/blob/master/src/main/java/com/mcjty/mytutorial/blocks/FancyBakedModel.java
 	public static BakedQuad createQuad(
 		Vec3d v1, Vec3d v2, Vec3d v3, Vec3d v4,
-		TextureAtlasSprite sprite, Direction dir, TextureWrapper r
+		TextureAtlasSprite sprite, Direction dir, TextureWrapper r,int tint
 	) {
 		Vec3d normal = v3.subtract(v2).crossProduct(v1.subtract(v2)).normalize();
 		
@@ -313,7 +550,14 @@ public class Renderer {
 		putVertex(builder, normal, v2.x, v2.y, v2.z, r.tx, r.ty+r.th, sprite, 1.0f, 1.0f, 1.0f);
 		putVertex(builder, normal, v3.x, v3.y, v3.z, r.tx+r.tw, r.ty+r.th, sprite, 1.0f, 1.0f, 1.0f);
 		putVertex(builder, normal, v4.x, v4.y, v4.z, r.tx+r.tw, r.ty, sprite, 1.0f, 1.0f, 1.0f);
+		builder.setQuadTint(tint);
 		return builder.build();
+	}
+	public static BakedQuad createQuad(
+			Vec3d v1, Vec3d v2, Vec3d v3, Vec3d v4,
+			TextureAtlasSprite sprite, Direction dir, TextureWrapper r
+	) {
+		return createQuad(v1,v2,v3,v4,sprite,dir,r,0);
 	}
 	//MCJTY:https://github.com/McJty/YouTubeModding14/blob/master/src/main/java/com/mcjty/mytutorial/blocks/FancyBakedModel.java
 	private static void putVertex(BakedQuadBuilder builder, Vec3d normal,

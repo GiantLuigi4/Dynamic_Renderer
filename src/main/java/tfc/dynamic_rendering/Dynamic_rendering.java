@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tfc.dynamic_rendering.TestingRegistry.DeferredItems;
 import tfc.dynamic_rendering.TestingRegistry.DeferredTileEntities;
+import tfc.dynamic_rendering.TestingRegistry.TintHelper;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("dynamic_rendering")
@@ -35,6 +36,8 @@ public class Dynamic_rendering {
 //		DeferredTileEntities.TILE_ENTITIES.register(bus);
 //		DeferredBlocks.BLOCKS.register(bus);
 		
+		TintHelper.ITEMS.register(bus);
+		
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
@@ -49,6 +52,7 @@ public class Dynamic_rendering {
 			Minecraft.getInstance().getItemColors().register(new LineColors(),DeferredItems.FACE.get());
 			Minecraft.getInstance().getItemColors().register(new LineColors(),DeferredItems.TEST.get());
 		} catch (Exception err) {}
+		Minecraft.getInstance().getItemColors().register(new LineColors(), TintHelper.CUBE.get());
 	}
 	
 	private void enqueueIMC(final InterModEnqueueEvent event) {

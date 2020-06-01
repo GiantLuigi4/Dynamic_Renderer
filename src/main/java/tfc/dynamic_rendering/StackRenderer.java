@@ -7,6 +7,10 @@ import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import tfc.dynamic_rendering.API.ExtrudedTexture;
+import tfc.dynamic_rendering.API.PreppedModel;
+import tfc.dynamic_rendering.API.Renderer;
 
 public class StackRenderer extends ItemStackTileEntityRenderer {
 	private static boolean up=true;
@@ -90,8 +94,51 @@ public class StackRenderer extends ItemStackTileEntityRenderer {
 //			}
 ////			LineColors.colors.clear();
 //		}
+		
+//		mdl=null;
+		if (mdl==null) {
+			ResourceLocation loc1=new ResourceLocation("dynamic_rendering:item/metal_pickaxe_leather");
+//			ResourceLocation loc1=new ResourceLocation("dynamic_rendering:item/test_resource_crystal");
+//			ResourceLocation loc1=new ResourceLocation("dynamic_rendering:item/metal_van_pick_metal");
+			ResourceLocation loc2=new ResourceLocation("minecraft:item/leather");
+//			ResourceLocation loc2=new ResourceLocation("minecraft:item/gold_ingot");
+//			ResourceLocation loc2=new ResourceLocation("dynamic_rendering:item/iron");
+			ResourceLocation loc3=new ResourceLocation("dynamic_rendering:item/metal_pickaxe_metal");
+//			ResourceLocation loc3=new ResourceLocation("dynamic_rendering:item/metal_van_pick_wood");
+			ResourceLocation loc4=new ResourceLocation("minecraft:block/gold_block");
+//			ResourceLocation loc4=new ResourceLocation("dynamic_rendering:item/oak");
+			ResourceLocation loc5=new ResourceLocation("dynamic_rendering:item/metal_pickaxe_metal_o");
+			ResourceLocation loc6=new ResourceLocation("minecraft:block/diamond_block");
+			ResourceLocation loc7=new ResourceLocation("dynamic_rendering:item/metal_pickaxe_wood");
+			ResourceLocation loc8=new ResourceLocation("minecraft:block/oak_planks");
+			mdl=Renderer.prepExtrudedTexture(
+					new ExtrudedTexture(loc1,loc2,1,false),
+					new ExtrudedTexture(loc3,loc4,0,false),
+					new ExtrudedTexture(loc5,loc6,1,false),
+					new ExtrudedTexture(loc7,loc8,-1,true)
+			);
+		}
+		p_228364_2_.push();
+		
+		p_228364_2_.scale(0.1f,0.1f,0.1f);
+		
+//		p_228364_2_.rotate(new Quaternion(180,-45,-50,true));
+//		p_228364_2_.translate(0,-8,-16);
+		
+		p_228364_2_.rotate(new Quaternion(0,0,90,true));
+		p_228364_2_.translate(0,-16,7);
+		p_228364_2_.rotate(new Quaternion(0,0,90,true));
+		p_228364_2_.translate(2,-13,0);
+
+//		p_228364_2_.rotate(new Quaternion(180,-45,0,true));
+//		p_228364_2_.translate(0,-16,-16);
+		
+		Renderer.renderPreparedModel(mdl,p_228364_3_,p_228364_2_,p_228364_4_,p_228364_5_,11034929,16238893,16777215,9664325);
 		super.render(p_228364_1_, p_228364_2_, p_228364_3_, p_228364_4_, p_228364_5_);
+		p_228364_2_.pop();
 	}
+	
+	PreppedModel mdl=null;
 	
 	public static void prepCulling(boolean north,boolean east,boolean south,boolean west,boolean up1,boolean down) {
 		up=up1;

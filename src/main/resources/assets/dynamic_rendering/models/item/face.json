@@ -1,0 +1,33 @@
+{
+	"credit": "Made with Blockbench",
+	"textures": {
+		"1": "dynamic_rendering:item/cube"
+	},
+	"elements": [
+		{
+			"name": "1",
+			"from": [7.5, 7.5, 7.5],
+			"to": [23.5, 23.5, 7.5],
+			"faces": {
+				"north": {"uv": [0, 0, 16, 16], "texture": "#1", "tintindex": 0}
+			}
+		}
+	],
+	"groups": [
+		{
+			"name": "1",
+			"origin": [22, 8, 8],
+			"children": [0]
+		},
+		{
+			"name": "1",
+			"origin": [22, 8, 8],
+			"children": []
+		},
+		{
+			"name": "1",
+			"origin": [22, 8, 8],
+			"children": []
+		}
+	]
+}

@@ -297,6 +297,9 @@ public class Renderer {
 	}
 	
 	public static PreppedModel prepExtrudedTexture(ExtrudedTexture... textures) {
+		return prepExtrudedTexture(true,textures);
+	}
+	public static PreppedModel prepExtrudedTexture(boolean oneSided,ExtrudedTexture... textures) {
 		ArrayList<BakedQuad> transparent=new ArrayList<>();
 		ArrayList<BakedQuad> solid=new ArrayList<>();
 		int offset=0;
@@ -419,37 +422,7 @@ public class Renderer {
 							BakedQuad quad5=createQuad(new Vec3d(x+1,y,offset),new Vec3d(x,y,offset),new Vec3d(x,y,-offset),new Vec3d(x+1,y,-offset),sprite2,Direction.NORTH,new TextureWrapper(px,py,1,1),-1);
 							BakedQuad quad6=createQuad(new Vec3d(x,y+1,offset),new Vec3d(x+1,y+1,offset),new Vec3d(x+1,y+1,-offset),new Vec3d(x,y+1,-offset),sprite2,Direction.NORTH,new TextureWrapper(px,py,1,1),-1);
 							transparent.add(quad);
-							transparent.add(quad2);
-							try {
-								if (new Color(sprite1.getPixelRGBA(0,x+1,y),true).getAlpha()==0) {
-									transparent.add(quad3);
-								}
-							} catch (Exception err) {
-								transparent.add(quad3);
-							}
-							try {
-								if (new Color(sprite1.getPixelRGBA(0,x-1,y),true).getAlpha()==0) {
-									transparent.add(quad4);
-								}
-							} catch (Exception err) {
-								transparent.add(quad4);
-							}
-							try {
-								if (new Color(sprite1.getPixelRGBA(0,x,y-1),true).getAlpha()==0) {
-									transparent.add(quad5);
-								}
-							} catch (Exception err) {
-								transparent.add(quad5);
-							}
-							try {
-								if (new Color(sprite1.getPixelRGBA(0,x,y+1),true).getAlpha()==0) {
-									transparent.add(quad6);
-								}
-							} catch (Exception err) {
-								transparent.add(quad6);
-							}
-							if (tx.twoTransparent) {
-								transparent.add(quad);
+							if (!oneSided) {
 								transparent.add(quad2);
 								try {
 									if (new Color(sprite1.getPixelRGBA(0,x+1,y),true).getAlpha()==0) {
@@ -480,42 +453,80 @@ public class Renderer {
 									transparent.add(quad6);
 								}
 							}
+							if (tx.twoTransparent) {
+								transparent.add(quad);
+								if (!oneSided) {
+									transparent.add(quad2);
+									try {
+										if (new Color(sprite1.getPixelRGBA(0,x+1,y),true).getAlpha()==0) {
+											transparent.add(quad3);
+										}
+									} catch (Exception err) {
+										transparent.add(quad3);
+									}
+									try {
+										if (new Color(sprite1.getPixelRGBA(0,x-1,y),true).getAlpha()==0) {
+											transparent.add(quad4);
+										}
+									} catch (Exception err) {
+										transparent.add(quad4);
+									}
+									try {
+										if (new Color(sprite1.getPixelRGBA(0,x,y-1),true).getAlpha()==0) {
+											transparent.add(quad5);
+										}
+									} catch (Exception err) {
+										transparent.add(quad5);
+									}
+									try {
+										if (new Color(sprite1.getPixelRGBA(0,x,y+1),true).getAlpha()==0) {
+											transparent.add(quad6);
+										}
+									} catch (Exception err) {
+										transparent.add(quad6);
+									}
+								}
+							}
 							
 							quad=createQuad(new Vec3d(x,y,offset),new Vec3d(x+1,y,offset),new Vec3d(x+1,y+1,offset),new Vec3d(x,y+1,offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
-							quad2=createQuad(new Vec3d(x+1,y,-offset),new Vec3d(x,y,-offset),new Vec3d(x,y+1,-offset),new Vec3d(x+1,y+1,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
-							quad3=createQuad(new Vec3d(x+1,y+1,offset),new Vec3d(x+1,y,offset),new Vec3d(x+1,y,-offset),new Vec3d(x+1,y+1,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
-							quad4=createQuad(new Vec3d(x,y,offset),new Vec3d(x,y+1,offset),new Vec3d(x,y+1,-offset),new Vec3d(x,y,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
-							quad5=createQuad(new Vec3d(x+1,y,offset),new Vec3d(x,y,offset),new Vec3d(x,y,-offset),new Vec3d(x+1,y,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
-							quad6=createQuad(new Vec3d(x,y+1,offset),new Vec3d(x+1,y+1,offset),new Vec3d(x+1,y+1,-offset),new Vec3d(x,y+1,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+							if (!oneSided) {
+								quad2=createQuad(new Vec3d(x+1,y,-offset),new Vec3d(x,y,-offset),new Vec3d(x,y+1,-offset),new Vec3d(x+1,y+1,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+								quad3=createQuad(new Vec3d(x+1,y+1,offset),new Vec3d(x+1,y,offset),new Vec3d(x+1,y,-offset),new Vec3d(x+1,y+1,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+								quad4=createQuad(new Vec3d(x,y,offset),new Vec3d(x,y+1,offset),new Vec3d(x,y+1,-offset),new Vec3d(x,y,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+								quad5=createQuad(new Vec3d(x+1,y,offset),new Vec3d(x,y,offset),new Vec3d(x,y,-offset),new Vec3d(x+1,y,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+								quad6=createQuad(new Vec3d(x,y+1,offset),new Vec3d(x+1,y+1,offset),new Vec3d(x+1,y+1,-offset),new Vec3d(x,y+1,-offset),sprite1,Direction.NORTH,new TextureWrapper(x,y,1,1),layer);
+							}
 							solid.add(quad);
-							solid.add(quad2);
-							try {
-								if (new Color(sprite1.getPixelRGBA(0,x+1,y),true).getAlpha()==0) {
+							if (!oneSided) {
+								solid.add(quad2);
+								try {
+									if (new Color(sprite1.getPixelRGBA(0,x+1,y),true).getAlpha()==0) {
+										solid.add(quad3);
+									}
+								} catch (Exception err) {
 									solid.add(quad3);
 								}
-							} catch (Exception err) {
-								solid.add(quad3);
-							}
-							try {
-								if (new Color(sprite1.getPixelRGBA(0,x-1,y),true).getAlpha()==0) {
+								try {
+									if (new Color(sprite1.getPixelRGBA(0,x-1,y),true).getAlpha()==0) {
+										solid.add(quad4);
+									}
+								} catch (Exception err) {
 									solid.add(quad4);
 								}
-							} catch (Exception err) {
-								solid.add(quad4);
-							}
-							try {
-								if (new Color(sprite1.getPixelRGBA(0,x,y-1),true).getAlpha()==0) {
+								try {
+									if (new Color(sprite1.getPixelRGBA(0,x,y-1),true).getAlpha()==0) {
+										solid.add(quad5);
+									}
+								} catch (Exception err) {
 									solid.add(quad5);
 								}
-							} catch (Exception err) {
-								solid.add(quad5);
-							}
-							try {
-								if (new Color(sprite1.getPixelRGBA(0,x,y+1),true).getAlpha()==0) {
+								try {
+									if (new Color(sprite1.getPixelRGBA(0,x,y+1),true).getAlpha()==0) {
+										solid.add(quad6);
+									}
+								} catch (Exception err) {
 									solid.add(quad6);
 								}
-							} catch (Exception err) {
-								solid.add(quad6);
 							}
 						}
 					} catch (Exception err) {}

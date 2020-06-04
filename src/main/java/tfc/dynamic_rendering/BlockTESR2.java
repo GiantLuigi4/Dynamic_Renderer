@@ -1,11 +1,13 @@
 package tfc.dynamic_rendering;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.ResourceLocation;
-import tfc.dynamic_rendering.API.Renderer;
+import net.minecraft.item.ItemStack;
+import tfc.dynamic_rendering.TestingRegistry.DeferredItems;
 
 public class BlockTESR2 extends TileEntityRenderer<Block.te> {
 	public BlockTESR2(TileEntityRendererDispatcher rendererDispatcherIn) {
@@ -112,9 +114,12 @@ public class BlockTESR2 extends TileEntityRenderer<Block.te> {
 //		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStackIn,bufferIn.getBuffer(RenderType.getSolid()),solid,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
 //		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStackIn,bufferIn.getBuffer(RenderType.getTranslucent()),transparent,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
 //		Minecraft.getInstance().getItemRenderer().renderQuads(matrixStackIn,bufferIn.getBuffer(RenderType.getSolid()),solid2,new ItemStack(Items.DIRT),combinedLightIn,combinedOverlayIn);
-		ResourceLocation loc1=new ResourceLocation("dynamic_rendering:blocks/corel_stone");
-		ResourceLocation loc2=new ResourceLocation("dynamic_rendering:blocks/pillar_overlay");
-		ResourceLocation loc3=new ResourceLocation("dynamic_rendering:blocks/sky_stone");
-		Renderer.render(loc1,loc2,loc3,bufferIn,matrixStackIn,combinedLightIn,combinedOverlayIn);
+
+//		ResourceLocation loc1=new ResourceLocation("dynamic_rendering:blocks/corel_stone");
+//		ResourceLocation loc2=new ResourceLocation("dynamic_rendering:blocks/pillar_overlay");
+//		ResourceLocation loc3=new ResourceLocation("dynamic_rendering:blocks/sky_stone");
+//		Renderer.render(loc1,loc2,loc3,bufferIn,matrixStackIn,combinedLightIn,combinedOverlayIn);
+		
+		Minecraft.getInstance().getItemRenderer().renderItem(new ItemStack(DeferredItems.STACK_RENDERER_TEST.get()), ItemCameraTransforms.TransformType.NONE,combinedLightIn,combinedOverlayIn,matrixStackIn,bufferIn);
 	}
 }

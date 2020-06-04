@@ -2,6 +2,8 @@ package tfc.dynamic_rendering;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -30,7 +32,11 @@ public class Dynamic_rendering {
 		bus.addListener(this::setup);
 		bus.addListener(this::enqueueIMC);
 		bus.addListener(this::processIMC);
-		bus.addListener(this::doClientStuff);
+		try {
+			if (Minecraft.getInstance()!=null) {
+				bus.addListener(this::doClientStuff);
+			}
+		} catch (Exception ignored) {}
 		
 //		DeferredItems.ITEMS.register(bus);
 //		DeferredTileEntities.TILE_ENTITIES.register(bus);
@@ -44,6 +50,7 @@ public class Dynamic_rendering {
 	private void setup(final FMLCommonSetupEvent event) {
 	}
 	
+	@OnlyIn(Dist.CLIENT)
 	private void doClientStuff(final FMLClientSetupEvent event) {
 		try {
 			ClientRegistry.bindTileEntityRenderer((TileEntityType<tfc.dynamic_rendering.Block.te>) DeferredTileEntities.TILE_ENTITY.get(), BlockTESR::new);

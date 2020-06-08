@@ -551,226 +551,494 @@ public class Renderer {
 			offset+=tx.width;
 			TextureAtlasSprite sprite1=Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tx.base);
 			TextureAtlasSprite sprite2=Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tx.mask);
-				for (int x=0;x<16+1;x++) {
-					boolean isOnPixel=false;
-					boolean justReleased=false;
-					int startY=-999;
-					int stopY=0;
-					for (int y=0;y<16;y++) {
-						try {
-							if (new Color(sprite1.getPixelRGBA(0,x,y),true).getAlpha()!=0) {
-								if (startY == -999) {
-									startY = y;
-								}
-								stopY = y+1;
-								isOnPixel=true;
-								justReleased=false;
-							} else {
-								if (isOnPixel) {
-									justReleased=true;
-								}
+			for (int x=0;x<16+1;x++) {
+				boolean isOnPixel=false;
+				boolean justReleased=false;
+				int startY=-999;
+				int stopY=0;
+				for (int y=0;y<16;y++) {
+					try {
+						if (new Color(sprite1.getPixelRGBA(0,x,y),true).getAlpha()!=0) {
+							if (startY == -999) {
+								startY = y;
 							}
-							if (justReleased||y==15) {
-								if (isOnPixel) {
-									try {
+							stopY = y+1;
+							isOnPixel=true;
+							justReleased=false;
+						} else {
+							if (isOnPixel) {
+								justReleased=true;
+							}
+						}
+						if (justReleased||y==15) {
+							if (isOnPixel) {
+								try {
 //										if (new Color(sprite1.getPixelRGBA(0, x, startY), true).getAlpha() != 0) {
-											BakedQuad quad = createQuad(
-													new Vec3d(x,stopY, -offset),
-													new Vec3d(x+1,stopY, -offset),
-													new Vec3d(x+1,startY, -offset),
-													new Vec3d(x, startY, -offset),
-													sprite2,
-													Direction.NORTH, new TextureWrapper(stopY, x, -(stopY-startY),1), -1,1);
-											BakedQuad quad2 = createQuad(
-													new Vec3d(x + 1, stopY, offset),
-													new Vec3d(x, stopY, offset),
-													new Vec3d(x, startY, offset),
-													new Vec3d(x + 1, startY, offset),
-													sprite2,
-													Direction.NORTH, new TextureWrapper(startY, x, (stopY-startY), 1), -1,0.5f);
-											BakedQuad quad3 = createQuad(
-													new Vec3d(x + 1, stopY, offset),
-													new Vec3d(x + 1, startY, offset),
-													new Vec3d(x + 1, startY, -offset),
-													new Vec3d(x + 1, stopY, -offset),
-													sprite2,
-													Direction.NORTH, new TextureWrapper(x, startY, 1, (stopY-startY)), -1,0.5f);
-											BakedQuad quad4 = createQuad(
-													new Vec3d(x, startY, offset),
-													new Vec3d(x, stopY, offset),
-													new Vec3d(x, stopY, -offset),
-													new Vec3d(x, startY, -offset), sprite2,
-													Direction.NORTH, new TextureWrapper(x, startY, 1, (stopY-startY)), -1,0.5f);
-											BakedQuad quad5 = createQuad(
-													new Vec3d(x + 1, startY, offset),
-													new Vec3d(x, startY, offset),
-													new Vec3d(x, startY, -offset),
-													new Vec3d(x + 1, startY, -offset),
-													sprite2,
-													Direction.NORTH, new TextureWrapper(startY, x, (stopY-startY), 1), -1,0.5f);
-											BakedQuad quad6 = createQuad(
-													new Vec3d(x, stopY, offset),
-													new Vec3d(x + 1, stopY, offset),
-													new Vec3d(x + 1, stopY, -offset),
-													new Vec3d(x, stopY, -offset),
-													sprite2,
-													Direction.NORTH, new TextureWrapper(startY, x, (stopY-startY), 1), -1,0.5f);
-											transparent.add(quad);
-											if (!oneSided) {
-												transparent.add(quad2);
-												try {
-													if (new Color(sprite1.getPixelRGBA(0, x + 1, y), true).getAlpha() == 0) {
-														transparent.add(quad3);
-													}
-												} catch (Exception err) {
+									BakedQuad quad = createQuad(
+											new Vec3d(x,stopY, -offset),
+											new Vec3d(x+1,stopY, -offset),
+											new Vec3d(x+1,startY, -offset),
+											new Vec3d(x, startY, -offset),
+											sprite2,
+											Direction.NORTH, new TextureWrapper(stopY, x, -(stopY-startY),1), -1,1);
+									BakedQuad quad2 = createQuad(
+											new Vec3d(x + 1, stopY, offset),
+											new Vec3d(x, stopY, offset),
+											new Vec3d(x, startY, offset),
+											new Vec3d(x + 1, startY, offset),
+											sprite2,
+											Direction.NORTH, new TextureWrapper(startY, x, (stopY-startY), 1), -1,0.5f);
+									BakedQuad quad3 = createQuad(
+											new Vec3d(x + 1, stopY, offset),
+											new Vec3d(x + 1, startY, offset),
+											new Vec3d(x + 1, startY, -offset),
+											new Vec3d(x + 1, stopY, -offset),
+											sprite2,
+											Direction.NORTH, new TextureWrapper(x, startY, 1, (stopY-startY)), -1,0.5f);
+									BakedQuad quad4 = createQuad(
+											new Vec3d(x, startY, offset),
+											new Vec3d(x, stopY, offset),
+											new Vec3d(x, stopY, -offset),
+											new Vec3d(x, startY, -offset), sprite2,
+											Direction.NORTH, new TextureWrapper(x, startY, 1, (stopY-startY)), -1,0.5f);
+									BakedQuad quad5 = createQuad(
+											new Vec3d(x + 1, startY, offset),
+											new Vec3d(x, startY, offset),
+											new Vec3d(x, startY, -offset),
+											new Vec3d(x + 1, startY, -offset),
+											sprite2,
+											Direction.NORTH, new TextureWrapper(startY, x, (stopY-startY), 1), -1,0.5f);
+									BakedQuad quad6 = createQuad(
+											new Vec3d(x, stopY, offset),
+											new Vec3d(x + 1, stopY, offset),
+											new Vec3d(x + 1, stopY, -offset),
+											new Vec3d(x, stopY, -offset),
+											sprite2,
+											Direction.NORTH, new TextureWrapper(startY, x, (stopY-startY), 1), -1,0.5f);
+									transparent.add(quad);
+									if (!oneSided) {
+										transparent.add(quad2);
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x + 1, y), true).getAlpha() == 0) {
+												transparent.add(quad3);
+											}
+										} catch (Exception err) {
+											transparent.add(quad3);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x - 1, y), true).getAlpha() == 0) {
+												transparent.add(quad4);
+											}
+										} catch (Exception err) {
+											transparent.add(quad4);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x, y - 1), true).getAlpha() == 0) {
+												transparent.add(quad5);
+											}
+										} catch (Exception err) {
+											transparent.add(quad5);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x, y + 1), true).getAlpha() == 0) {
+												transparent.add(quad6);
+											}
+										} catch (Exception err) {
+											transparent.add(quad6);
+										}
+									}
+									if (tx.twoTransparent) {
+										transparent.add(quad);
+										if (!oneSided) {
+											transparent.add(quad2);
+											try {
+												if (new Color(sprite1.getPixelRGBA(0, x + 1, y), true).getAlpha() == 0) {
 													transparent.add(quad3);
 												}
-												try {
-													if (new Color(sprite1.getPixelRGBA(0, x - 1, y), true).getAlpha() == 0) {
-														transparent.add(quad4);
-													}
-												} catch (Exception err) {
+											} catch (Exception err) {
+												transparent.add(quad3);
+											}
+											try {
+												if (new Color(sprite1.getPixelRGBA(0, x - 1, y), true).getAlpha() == 0) {
 													transparent.add(quad4);
 												}
-												try {
-													if (new Color(sprite1.getPixelRGBA(0, x, y - 1), true).getAlpha() == 0) {
-														transparent.add(quad5);
-													}
-												} catch (Exception err) {
+											} catch (Exception err) {
+												transparent.add(quad4);
+											}
+											try {
+												if (new Color(sprite1.getPixelRGBA(0, x, y - 1), true).getAlpha() == 0) {
 													transparent.add(quad5);
 												}
-												try {
-													if (new Color(sprite1.getPixelRGBA(0, x, y + 1), true).getAlpha() == 0) {
-														transparent.add(quad6);
-													}
-												} catch (Exception err) {
+											} catch (Exception err) {
+												transparent.add(quad5);
+											}
+											try {
+												if (new Color(sprite1.getPixelRGBA(0, x, y + 1), true).getAlpha() == 0) {
 													transparent.add(quad6);
 												}
+											} catch (Exception err) {
+												transparent.add(quad6);
 											}
-											if (tx.twoTransparent) {
-												transparent.add(quad);
-												if (!oneSided) {
-													transparent.add(quad2);
-													try {
-														if (new Color(sprite1.getPixelRGBA(0, x + 1, y), true).getAlpha() == 0) {
-															transparent.add(quad3);
-														}
-													} catch (Exception err) {
-														transparent.add(quad3);
-													}
-													try {
-														if (new Color(sprite1.getPixelRGBA(0, x - 1, y), true).getAlpha() == 0) {
-															transparent.add(quad4);
-														}
-													} catch (Exception err) {
-														transparent.add(quad4);
-													}
-													try {
-														if (new Color(sprite1.getPixelRGBA(0, x, y - 1), true).getAlpha() == 0) {
-															transparent.add(quad5);
-														}
-													} catch (Exception err) {
-														transparent.add(quad5);
-													}
-													try {
-														if (new Color(sprite1.getPixelRGBA(0, x, y + 1), true).getAlpha() == 0) {
-															transparent.add(quad6);
-														}
-													} catch (Exception err) {
-														transparent.add(quad6);
-													}
-												}
-											}
-											
-											quad = createQuad(
-													new Vec3d(x,stopY, -offset),
-													new Vec3d(x+1,stopY, -offset),
-													new Vec3d(x+1,startY, -offset),
-													new Vec3d(x,startY, -offset),
-													sprite1,
-													Direction.NORTH, new TextureCoords(x,x+1,x+1,x,stopY,stopY,startY,startY), layer);
-											if (!oneSided) {
-												quad2 = createQuad(
-														new Vec3d(x + 1, startY, -offset),
-														new Vec3d(x, startY, -offset),
-														new Vec3d(x, stopY, -offset),
-														new Vec3d(x + 1, stopY, -offset),
-														sprite1,
-														Direction.NORTH, new TextureCoords(x+1,x,x,x+1,startY,startY,stopY,stopY), layer);
-												quad3 = createQuad(
-														new Vec3d(x + 1, stopY, offset),
-														new Vec3d(x + 1, startY, offset),
-														new Vec3d(x + 1, startY, -offset),
-														new Vec3d(x + 1, stopY, -offset),
-														sprite1,
-														Direction.NORTH, new TextureWrapper(x, startY, 1, (stopY-startY)), layer);
-												quad4 = createQuad(
-														new Vec3d(x, startY, offset),
-														new Vec3d(x, stopY, offset),
-														new Vec3d(x, stopY, -offset),
-														new Vec3d(x, startY, -offset), sprite1,
-														Direction.NORTH, new TextureWrapper(x, startY, 1, (stopY-startY)), layer);
-												quad5 = createQuad(
-														new Vec3d(x + 1, startY, offset),
-														new Vec3d(x, startY, offset),
-														new Vec3d(x, startY, -offset),
-														new Vec3d(x + 1, startY, -offset),
-														sprite1,
-														Direction.NORTH, new TextureWrapper(startY, x, (stopY-startY), 1), layer);
-												quad6 = createQuad(
-														new Vec3d(x, stopY, offset),
-														new Vec3d(x + 1, stopY, offset),
-														new Vec3d(x + 1, stopY, -offset),
-														new Vec3d(x, stopY, -offset),
-														sprite1,
-														Direction.NORTH, new TextureWrapper(startY, x, (stopY-startY), 1), layer);
-											}
-											solid.add(quad);
-											if (!oneSided) {
-												solid.add(quad2);
-												try {
-													if (new Color(sprite1.getPixelRGBA(0, x + 1, y), true).getAlpha() == 0) {
-														solid.add(quad3);
-													}
-												} catch (Exception err) {
-													solid.add(quad3);
-												}
-												try {
-													if (new Color(sprite1.getPixelRGBA(0, x - 1, y), true).getAlpha() == 0) {
-														solid.add(quad4);
-													}
-												} catch (Exception err) {
-													solid.add(quad4);
-												}
-												try {
-													if (new Color(sprite1.getPixelRGBA(0, x, y - 1), true).getAlpha() == 0) {
-														solid.add(quad5);
-													}
-												} catch (Exception err) {
-													solid.add(quad5);
-												}
-												try {
-													if (new Color(sprite1.getPixelRGBA(0, x, y + 1), true).getAlpha() == 0) {
-														solid.add(quad6);
-													}
-												} catch (Exception err) {
-													solid.add(quad6);
-												}
-											}
-//										}
-									} catch (Exception err) {
+										}
 									}
-									isOnPixel=false;
-									startY=-999;
+									
+									quad = createQuad(
+											new Vec3d(x,stopY, -offset),
+											new Vec3d(x+1,stopY, -offset),
+											new Vec3d(x+1,startY, -offset),
+											new Vec3d(x,startY, -offset),
+											sprite1,
+											Direction.NORTH, new TextureCoords(x,x+1,x+1,x,stopY,stopY,startY,startY), layer);
+									if (!oneSided) {
+										quad2 = createQuad(
+												new Vec3d(x + 1, startY, -offset),
+												new Vec3d(x, startY, -offset),
+												new Vec3d(x, stopY, -offset),
+												new Vec3d(x + 1, stopY, -offset),
+												sprite1,
+												Direction.NORTH, new TextureCoords(x+1,x,x,x+1,startY,startY,stopY,stopY), layer);
+										quad3 = createQuad(
+												new Vec3d(x + 1, stopY, offset),
+												new Vec3d(x + 1, startY, offset),
+												new Vec3d(x + 1, startY, -offset),
+												new Vec3d(x + 1, stopY, -offset),
+												sprite1,
+												Direction.NORTH, new TextureWrapper(x, startY, 1, (stopY-startY)), layer);
+										quad4 = createQuad(
+												new Vec3d(x, startY, offset),
+												new Vec3d(x, stopY, offset),
+												new Vec3d(x, stopY, -offset),
+												new Vec3d(x, startY, -offset), sprite1,
+												Direction.NORTH, new TextureWrapper(x, startY, 1, (stopY-startY)), layer);
+										quad5 = createQuad(
+												new Vec3d(x + 1, startY, offset),
+												new Vec3d(x, startY, offset),
+												new Vec3d(x, startY, -offset),
+												new Vec3d(x + 1, startY, -offset),
+												sprite1,
+												Direction.NORTH, new TextureWrapper(startY, x, (stopY-startY), 1), layer);
+										quad6 = createQuad(
+												new Vec3d(x, stopY, offset),
+												new Vec3d(x + 1, stopY, offset),
+												new Vec3d(x + 1, stopY, -offset),
+												new Vec3d(x, stopY, -offset),
+												sprite1,
+												Direction.NORTH, new TextureWrapper(startY, x, (stopY-startY), 1), layer);
+									}
+									solid.add(quad);
+									if (!oneSided) {
+										solid.add(quad2);
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x + 1, y), true).getAlpha() == 0) {
+												solid.add(quad3);
+											}
+										} catch (Exception err) {
+											solid.add(quad3);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x - 1, y), true).getAlpha() == 0) {
+												solid.add(quad4);
+											}
+										} catch (Exception err) {
+											solid.add(quad4);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x, y - 1), true).getAlpha() == 0) {
+												solid.add(quad5);
+											}
+										} catch (Exception err) {
+											solid.add(quad5);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x, y + 1), true).getAlpha() == 0) {
+												solid.add(quad6);
+											}
+										} catch (Exception err) {
+											solid.add(quad6);
+										}
+									}
+//										}
+								} catch (Exception err) {
 								}
+								isOnPixel=false;
+								startY=-999;
 							}
-						} catch (Exception err) {}
-					}
+						}
+					} catch (Exception err) {}
 				}
+			}
 			layer++;
 		}
 		return new PreppedModel(solid,new ArrayList<>(),transparent);
 	}
+
+	public static PreppedModel prepModel(TexturedModel mdl,boolean inverted) {
+		ArrayList<BakedQuad> transparent=new ArrayList<>();
+		ArrayList<BakedQuad> solid=new ArrayList<>();
+		ArrayList<BakedQuad> solid2=new ArrayList<>();
+		for (TexturedQuad qd:mdl.quads) {
+			try {
+				if (!qd.useCoords) {
+					BakedQuad quad=createQuad(inverted?qd.vec4:qd.vec1,inverted?qd.vec3:qd.vec2,inverted?qd.vec2:qd.vec3,inverted?qd.vec1:qd.vec4,qd.sprite,Direction.NORTH,qd.wrapper,-1,0.5f);
+					if (qd.isTransparent) {
+						transparent.add(quad);
+					} else if (qd.isPrimary) {
+						solid.add(quad);
+					} else {
+						solid2.add(quad);
+					}
+				} else {
+					BakedQuad quad=createQuad(inverted?qd.vec4:qd.vec1,inverted?qd.vec3:qd.vec2,inverted?qd.vec2:qd.vec3,inverted?qd.vec1:qd.vec4,qd.sprite,Direction.NORTH,qd.coords,-1);
+					if (qd.isTransparent) {
+						transparent.add(quad);
+					} else if (qd.isPrimary) {
+						solid.add(quad);
+					} else {
+						solid2.add(quad);
+					}
+				}
+			} catch (Exception err) {}
+		}
+		return new PreppedModel(solid,solid2,transparent);
+	}
+	
+	public static TexturedModel createExtrudedTextureNoTexCorrection(boolean oneSided, ExtrudedTexture... textures) {
+		ArrayList<TexturedQuad> Quads=new ArrayList<>();
+		int offset=0;
+		int layer=0;
+		for (ExtrudedTexture tx:textures) {
+			offset+=tx.width;
+			TextureAtlasSprite sprite1=Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tx.base);
+			TextureAtlasSprite sprite2=Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tx.mask);
+			for (int x=0;x<16+1;x++) {
+				boolean isOnPixel=false;
+				boolean justReleased=false;
+				int startY=-999;
+				int stopY=0;
+				for (int y=0;y<16;y++) {
+					try {
+						if (new Color(sprite1.getPixelRGBA(0,x,y),true).getAlpha()!=0) {
+							if (startY == -999) {
+								startY = y;
+							}
+							stopY = y+1;
+							isOnPixel=true;
+							justReleased=false;
+						} else {
+							if (isOnPixel) {
+								justReleased=true;
+							}
+						}
+						if (justReleased||y==15) {
+							if (isOnPixel) {
+								try {
+//										if (new Color(sprite1.getPixelRGBA(0, x, startY), true).getAlpha() != 0) {
+									TexturedQuad quad = new TexturedQuad(
+											new Vec3d(x,stopY, -offset),
+											new Vec3d(x+1,stopY, -offset),
+											new Vec3d(x+1,startY, -offset),
+											new Vec3d(x, startY, -offset),
+											new TextureWrapper(stopY, x, -(stopY-startY),1),
+											sprite2);
+									TexturedQuad quad2 = new TexturedQuad(
+											new Vec3d(x + 1, stopY, offset),
+											new Vec3d(x, stopY, offset),
+											new Vec3d(x, startY, offset),
+											new Vec3d(x + 1, startY, offset),
+											new TextureWrapper(startY, x, (stopY-startY), 1),
+											sprite2);
+									TexturedQuad quad3 = new TexturedQuad(
+											new Vec3d(x + 1, stopY, offset),
+											new Vec3d(x + 1, startY, offset),
+											new Vec3d(x + 1, startY, -offset),
+											new Vec3d(x + 1, stopY, -offset),
+											new TextureWrapper(x, startY, 1, (stopY-startY)),
+											sprite2);
+									TexturedQuad quad4 = new TexturedQuad(
+											new Vec3d(x, startY, offset),
+											new Vec3d(x, stopY, offset),
+											new Vec3d(x, stopY, -offset),
+											new Vec3d(x, startY, -offset),
+											new TextureWrapper(x, startY, 1, (stopY-startY)),
+											sprite2);
+									TexturedQuad quad5 = new TexturedQuad(
+											new Vec3d(x + 1, startY, offset),
+											new Vec3d(x, startY, offset),
+											new Vec3d(x, startY, -offset),
+											new Vec3d(x + 1, startY, -offset),
+											new TextureWrapper(startY, x, (stopY-startY), 1),
+											sprite2);
+									TexturedQuad quad6 = new TexturedQuad(
+											new Vec3d(x, stopY, offset),
+											new Vec3d(x + 1, stopY, offset),
+											new Vec3d(x + 1, stopY, -offset),
+											new Vec3d(x, stopY, -offset),
+											new TextureWrapper(startY, x, (stopY-startY), 1),
+											sprite2);
+									quad.setTransparent();
+									quad2.setTransparent();
+									quad3.setTransparent();
+									quad4.setTransparent();
+									quad5.setTransparent();
+									quad6.setTransparent();
+									Quads.add(quad);
+									if (!oneSided) {
+										Quads.add(quad2);
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x + 1, y), true).getAlpha() == 0) {
+												Quads.add(quad3);
+											}
+										} catch (Exception err) {
+											Quads.add(quad3);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x - 1, y), true).getAlpha() == 0) {
+												Quads.add(quad4);
+											}
+										} catch (Exception err) {
+											Quads.add(quad4);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x, y - 1), true).getAlpha() == 0) {
+												Quads.add(quad5);
+											}
+										} catch (Exception err) {
+											Quads.add(quad5);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x, y + 1), true).getAlpha() == 0) {
+												Quads.add(quad6);
+											}
+										} catch (Exception err) {
+											Quads.add(quad6);
+										}
+									}
+									if (tx.twoTransparent) {
+										Quads.add(quad);
+										if (!oneSided) {
+											Quads.add(quad2);
+											try {
+												if (new Color(sprite1.getPixelRGBA(0, x + 1, y), true).getAlpha() == 0) {
+													Quads.add(quad3);
+												}
+											} catch (Exception err) {
+												Quads.add(quad3);
+											}
+											try {
+												if (new Color(sprite1.getPixelRGBA(0, x - 1, y), true).getAlpha() == 0) {
+													Quads.add(quad4);
+												}
+											} catch (Exception err) {
+												Quads.add(quad4);
+											}
+											try {
+												if (new Color(sprite1.getPixelRGBA(0, x, y - 1), true).getAlpha() == 0) {
+													Quads.add(quad5);
+												}
+											} catch (Exception err) {
+												Quads.add(quad5);
+											}
+											try {
+												if (new Color(sprite1.getPixelRGBA(0, x, y + 1), true).getAlpha() == 0) {
+													Quads.add(quad6);
+												}
+											} catch (Exception err) {
+												Quads.add(quad6);
+											}
+										}
+									}
+									
+									quad = new TexturedQuad(
+											new Vec3d(x,stopY, -offset),
+											new Vec3d(x+1,stopY, -offset),
+											new Vec3d(x+1,startY, -offset),
+											new Vec3d(x,startY, -offset),
+											new TextureCoords(x,x+1,x+1,x,stopY,stopY,startY,startY),
+											sprite1);
+									if (!oneSided) {
+										quad2 = new TexturedQuad(
+												new Vec3d(x + 1, startY, -offset),
+												new Vec3d(x, startY, -offset),
+												new Vec3d(x, stopY, -offset),
+												new Vec3d(x + 1, stopY, -offset),
+												new TextureCoords(x+1,x,x,x+1,startY,startY,stopY,stopY),
+												sprite1);
+										quad3 = new TexturedQuad(
+												new Vec3d(x + 1, stopY, offset),
+												new Vec3d(x + 1, startY, offset),
+												new Vec3d(x + 1, startY, -offset),
+												new Vec3d(x + 1, stopY, -offset),
+												new TextureWrapper(x, startY, 1, (stopY-startY)),
+												sprite1);
+										quad4 = new TexturedQuad(
+												new Vec3d(x, startY, offset),
+												new Vec3d(x, stopY, offset),
+												new Vec3d(x, stopY, -offset),
+												new Vec3d(x, startY, -offset),
+												new TextureWrapper(x, startY, 1, (stopY-startY)),
+												sprite1);
+										quad5 = new TexturedQuad(
+												new Vec3d(x + 1, startY, offset),
+												new Vec3d(x, startY, offset),
+												new Vec3d(x, startY, -offset),
+												new Vec3d(x + 1, startY, -offset),
+												new TextureWrapper(startY, x, (stopY-startY), 1),
+												sprite1);
+										quad6 = new TexturedQuad(
+												new Vec3d(x, stopY, offset),
+												new Vec3d(x + 1, stopY, offset),
+												new Vec3d(x + 1, stopY, -offset),
+												new Vec3d(x, stopY, -offset),
+												new TextureWrapper(startY, x, (stopY-startY), 1),
+												sprite1);
+									}
+									Quads.add(quad);
+									if (!oneSided) {
+										Quads.add(quad2);
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x + 1, y), true).getAlpha() == 0) {
+												Quads.add(quad3);
+											}
+										} catch (Exception err) {
+											Quads.add(quad3);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x - 1, y), true).getAlpha() == 0) {
+												Quads.add(quad4);
+											}
+										} catch (Exception err) {
+											Quads.add(quad4);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x, y - 1), true).getAlpha() == 0) {
+												Quads.add(quad5);
+											}
+										} catch (Exception err) {
+											Quads.add(quad5);
+										}
+										try {
+											if (new Color(sprite1.getPixelRGBA(0, x, y + 1), true).getAlpha() == 0) {
+												Quads.add(quad6);
+											}
+										} catch (Exception err) {
+											Quads.add(quad6);
+										}
+									}
+//										}
+								} catch (Exception err) {
+								}
+								isOnPixel=false;
+								startY=-999;
+							}
+						}
+					} catch (Exception err) {}
+				}
+			}
+			layer++;
+		}
+		return new TexturedModel(Quads);
+	}
+	
 	public static PreppedModel createFlatPreppedModel(ResourceLocation sprite,boolean transparent) {
 		int a=0;
 		int b=16;
@@ -783,6 +1051,21 @@ public class Renderer {
 		ArrayList<BakedQuad> qds=new ArrayList<>();
 		qds.add(qd);
 		return new PreppedModel(transparent?new ArrayList<>():qds,new ArrayList<>(),transparent?qds:new ArrayList<>());
+	}
+	
+	public static TexturedModel createFlatTexturedModel(ResourceLocation sprite,boolean transparent) {
+		int a=0;
+		int b=16;
+		TexturedQuad qd=new TexturedQuad(
+				new Vec3d(a,a, 0),
+				new Vec3d(a,b, 0),
+				new Vec3d(b,b, 0),
+				new Vec3d(b,a, 0),
+				new TextureWrapper(0,0,16,16),
+				Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(sprite));
+		ArrayList<TexturedQuad> qds=new ArrayList<>();
+		qds.add(qd);
+		return new TexturedModel(qds);
 	}
 	
 	public static void renderPreparedModel(PreppedModel mdl,  IRenderTypeBuffer buffer, MatrixStack matrixStack, int combinedLightIn,int combinedOverlayIn, int... tints) {

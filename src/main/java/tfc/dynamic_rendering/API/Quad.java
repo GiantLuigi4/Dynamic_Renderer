@@ -6,6 +6,8 @@ public class Quad {
 	protected Vec3d vec3;
 	protected Vec3d vec4;
 	protected TextureWrapper wrapper;
+	protected TextureCoords coords;
+	protected boolean useCoords=false;
 	
 	public Quad(Vec3d vec1, Vec3d vec2, Vec3d vec3, Vec3d vec4, TextureWrapper wrapper) {
 		this.vec1 = vec1;
@@ -13,6 +15,14 @@ public class Quad {
 		this.vec3 = vec3;
 		this.vec4 = vec4;
 		this.wrapper = wrapper;
+	}
+	public Quad(Vec3d vec1, Vec3d vec2, Vec3d vec3, Vec3d vec4, TextureCoords coords) {
+		this.vec1 = vec1;
+		this.vec2 = vec2;
+		this.vec3 = vec3;
+		this.vec4 = vec4;
+		this.coords = coords;
+		this.useCoords=true;
 	}
 	public Quad shrink(float amt) {
 		Quad newQuad=new Quad(new Vec3d(

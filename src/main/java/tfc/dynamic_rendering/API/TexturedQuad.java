@@ -27,6 +27,11 @@ public class TexturedQuad extends Quad {
 		return this;
 	}
 	
+	public TexturedQuad(Vec3d vec1, Vec3d vec2, Vec3d vec3, Vec3d vec4, TextureCoords coords, TextureAtlasSprite sprite) {
+		super(vec1, vec2, vec3, vec4, coords);
+		this.sprite = sprite;
+	}
+	
 	public TexturedQuad(Vec3d vec1, Vec3d vec2, Vec3d vec3, Vec3d vec4, TextureWrapper wrapper) {
 		super(vec1, vec2, vec3, vec4, wrapper);
 	}

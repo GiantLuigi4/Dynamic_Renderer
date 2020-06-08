@@ -9,8 +9,8 @@ import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import tfc.dynamic_rendering.API.ExtrudedTexture;
-import tfc.dynamic_rendering.API.PreppedModel;
 import tfc.dynamic_rendering.API.Renderer;
+import tfc.dynamic_rendering.API.TexturedModel;
 
 public class StackRenderer extends ItemStackTileEntityRenderer {
 	private static boolean up=true;
@@ -95,7 +95,7 @@ public class StackRenderer extends ItemStackTileEntityRenderer {
 ////			LineColors.colors.clear();
 //		}
 		
-//		mdl=null;
+		mdl=null;
 		if (mdl==null) {
 //			ResourceLocation loc1=new ResourceLocation("dynamic_rendering:item/metal_pickaxe_leather");
 			ResourceLocation loc1=new ResourceLocation("dynamic_rendering:blocks/pillar_base");
@@ -115,14 +115,13 @@ public class StackRenderer extends ItemStackTileEntityRenderer {
 			ResourceLocation loc6=new ResourceLocation("minecraft:block/diamond_block");
 			ResourceLocation loc7=new ResourceLocation("dynamic_rendering:item/metal_pickaxe_wood");
 			ResourceLocation loc8=new ResourceLocation("minecraft:block/oak_planks");
-			mdl=Renderer.prepExtrudedTextureNoTexCorrection(true
+			mdl=(Renderer.createExtrudedTextureNoTexCorrection(true
 //					,new ExtrudedTexture(loc1,loc2,1,false)
 					,new ExtrudedTexture(loc3,loc4,1,false)
 //					,new ExtrudedTexture(loc5,loc6,1,false)
 //					,new ExtrudedTexture(loc7,loc8,-1,true)
-			);
-			mdl=PreppedModel.merge(mdl,Renderer.createFlatPreppedModel(loc1,false));
-			mdl=PreppedModel.merge(mdl,Renderer.createFlatPreppedModel(loc2,true));
+			));
+			mdl=mdl.merge(Renderer.createFlatTexturedModel(loc1,false),Renderer.createFlatTexturedModel(loc2,true));
 		}
 		p_228364_2_.push();
 		
@@ -139,14 +138,14 @@ public class StackRenderer extends ItemStackTileEntityRenderer {
 //		p_228364_2_.rotate(new Quaternion(180,-45,0,true));
 //		p_228364_2_.translate(0,-16,-16);
 
-		p_228364_2_.scale(1,1,0.01f);
+//		p_228364_2_.scale(1,1,0.01f);
 //		Renderer.renderPreparedModel(mdl,p_228364_3_,p_228364_2_,p_228364_4_,p_228364_5_,11034929,16238893,16777215,9664325);
-		Renderer.renderPreparedModel(mdl,p_228364_3_,p_228364_2_,p_228364_4_,p_228364_5_);
+		Renderer.renderPreparedModel(Renderer.prepModel(mdl.scale(0.625f,0.625f,0.001f).translate(-8.0f,-2.0f,-1).rotate((float)Math.toRadians(90),0),false),p_228364_3_,p_228364_2_,p_228364_4_,p_228364_5_);
 		super.render(p_228364_1_, p_228364_2_, p_228364_3_, p_228364_4_, p_228364_5_);
 		p_228364_2_.pop();
 	}
 	
-	PreppedModel mdl=null;
+	TexturedModel mdl=null;
 	
 	public static void prepCulling(boolean north,boolean east,boolean south,boolean west,boolean up1,boolean down) {
 		up=up1;

@@ -797,7 +797,8 @@ public class Renderer {
 						solid2.add(quad);
 					}
 				}
-			} catch (Exception err) {}
+			} catch (Exception err) {
+			}
 		}
 		return new PreppedModel(solid,solid2,transparent);
 	}
@@ -1064,6 +1065,9 @@ public class Renderer {
 				new TextureWrapper(0,0,16,16),
 				Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(sprite));
 		ArrayList<TexturedQuad> qds=new ArrayList<>();
+		if (transparent) {
+			qd=qd.setTransparent();
+		}
 		qds.add(qd);
 		return new TexturedModel(qds);
 	}

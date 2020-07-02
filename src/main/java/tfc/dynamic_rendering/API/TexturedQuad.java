@@ -13,7 +13,7 @@ public class TexturedQuad extends Quad {
 	}
 	
 	public TexturedQuad(Quad qd,TextureAtlasSprite sprite) {
-		super(qd.vec1,qd.vec2,qd.vec3,qd.vec4,qd.wrapper);
+		super(qd);
 		this.sprite = sprite;
 	}
 	
@@ -32,9 +32,9 @@ public class TexturedQuad extends Quad {
 		this.sprite = sprite;
 	}
 	
-	public TexturedQuad(Vec3d vec1, Vec3d vec2, Vec3d vec3, Vec3d vec4, TextureWrapper wrapper) {
-		super(vec1, vec2, vec3, vec4, wrapper);
-	}
+//	public TexturedQuad(Vec3d vec1, Vec3d vec2, Vec3d vec3, Vec3d vec4, TextureWrapper wrapper) {
+//		super(vec1, vec2, vec3, vec4, wrapper);
+//	}
 	
 	public TexturedQuad shrinkT(float amt) {
 		return new TexturedQuad(super.shrink(amt),this.sprite);
